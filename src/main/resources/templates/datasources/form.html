@@ -1,0 +1,153 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title>Guardar Datasources</title>
+</head>
+
+<body>
+<div layout:fragment="breadcrumb">
+    <h1 th:text="#{DataSourcesForm.Title}"></h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> <span th:text="#{Home.Title}"/></a></li>
+        <li class="active" th:text="#{DataSourcesForm.Title}">Guardar DataSources</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <form role="form" th:object="${DataSources}" method="post">
+
+
+                <div class="box box-primary">
+                
+	                   <br/>
+
+	                    <div id="exTab1">
+		                        
+	                        <div class="box-body">
+	                            <div class="tab-content">
+<!-- 	                                <input th:type="hidden" th:field="${DataSources.idDatasource}"/> -->
+	
+	                                <div class="tab-pane active" id="1a">
+	
+	                                    <div class="form-row">
+	                                    
+	                                    	<div class="form-group col-md-6">
+	                                            <label for="idDatasource">ID DataSources</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('idDatasource')}"
+	                                                   th:errors="*{idDatasource}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="idDatasource"
+	                                                   th:field="${DataSources.idDatasource}"	                                                    
+	                                                   maxlength="20"
+	                                                   th:readonly="${DataSources.idDatasource!=null}">
+	                                        </div>
+	                                        
+	                                        <div class="form-group col-md-6">
+	                                            <label for="nombreDataSource">Nombre DataSources</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('nombreDataSource')}"
+	                                                   th:errors="*{nombreDataSource}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="nombreDataSource"
+	                                                   th:field="${DataSources.nombreDataSource}"
+	                                                   maxlength="20">
+	                                        </div>
+	         
+	                                                
+	                                        <div class="form-group col-md-6">
+	                                            <label for="tipoDataSources">Tipo DataSources</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('tipoDataSources')}"
+	                                                   th:errors="*{tipoDataSources}"></small>
+	                                            <select id="tipoDataSources"
+	                                                    class="form-control"
+	                                                    th:field="${DataSources.tipoDataSources}">
+	                                                <option th:each="frecuencia : ${TipoDataSources}"
+	                                                        th:value="${frecuencia}"
+	                                                        th:text="${frecuencia}"/>
+	                                            </select>
+	                                            
+	                                        </div>	                                        
+	                                        
+	                                        <div class="form-group col-md-6">
+	                                            <label for="url">URL</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('url')}"
+	                                                   th:errors="*{url}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="url"
+	                                                   th:field="${DataSources.url}"
+	                                                   maxlength="60">
+	                                        </div>
+	
+	
+	                        
+	
+	                                        <div class="form-group col-md-6">
+	                                            <label for="userName">Usuario</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('userName')}"
+	                                                   th:errors="*{userName}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="userName"
+	                                                   th:field="${DataSources.userName}"
+	                                                   maxlength="50">
+	                                        </div>
+	
+	                                        
+	                                        <div class="form-group col-md-6">
+	                                            <label for="pass">Password</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('pass')}"
+	                                                   th:errors="*{pass}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="pass"
+	                                                   th:field="${DataSources.pass}"
+	                                                   maxlength="30">
+	                                        </div>
+	                                        
+	                                        <div class="form-group col-md-6">
+	                                            <label for="bdInicial">BD Inicial</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('bdInicial')}"
+	                                                   th:errors="*{bdInicial}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="bdInicial"
+	                                                   th:field="${DataSources.bdInicial}"
+	                                                   maxlength="30">
+	                                        </div>
+	
+	                                    </div>
+	                                </div>
+	                                <!--FIn Tab1A -->
+	                                
+	                            </div>
+	                        </div>
+	
+	
+	                    </div>
+
+
+
+	                    <div class="box-footer with-border">
+	                        <a th:href="@{/datasources/list}" class="btn btn-default" role="button"
+	                           title="Back list" th:text="Cancelar">
+	                            <span aria-hidden="true"></span>
+	                        </a>
+	                        <button type="submit" class="box-title btn btn-primary"
+	                                title="Save Data" th:text="Guardar">
+	                        </button>
+	                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

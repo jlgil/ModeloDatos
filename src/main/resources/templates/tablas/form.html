@@ -1,0 +1,757 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title>Guardar Tabla</title>
+ <style>    
+.myModal-header{
+	padding:6px 10px 6px 20px;
+	background-color:#007DCF;
+	border:0px;
+	height:30px;
+}
+ 
+.myModal-body{
+	padding:30px 40px 30px 40px;
+	background-color:#1E253F;
+	border-left:1px solid #007DCF;
+	border-right:1px solid #007DCF;
+}
+ 
+.myModal-header-font{
+	font-size:12px;
+	color:#FFFFFF;
+}
+ 
+.myModal-header-close{
+	color:white;
+}
+ 
+.myModal-select{
+	appearance:none;
+	-moz-appearance:none;
+	-webkit-appearance:none;
+	padding-right:10px;
+	background:url("../css/images/newpic/chevron-down.png") no-repeat scroll right center transparent;
+	background-position-x: 185px;
+}
+ 
+.myModal-input{
+	background-color:#1E253F;
+	border:1px solid #007DCF
+}
+ 
+.myModal-footer{
+	background-color:#1E253F;
+	border:1px solid #007DCF;
+	border-top:none;
+	padding:0px 15px 30px 15px;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+
+
+
+    $('#inputTipoDireccion').on('change', function () {
+
+        var selectedText = $("#inputTipoDireccion option:selected").html();
+
+        $("input[name='direccionNueva.nombreTipoDireccion']").val(selectedText);
+    });
+
+
+    $('button[name="addDireccion"]').click(function (event) {
+        event.preventDefault();
+
+
+        noErrors = true; //validarDireccion();
+
+        if (noErrors) {
+            /* selectedText = $("#inputTipoDireccion option:selected").html();
+            $("input[name='direccionNueva.nombreTipoDireccion']").val(selectedText);
+
+            selectedText = $("#inputDepartamento option:selected").html();
+            $("input[name='direccionNueva.departamento']").val(selectedText); */
+
+            var data = $('form').serialize();
+            selector = $('input[name=parametro]').val();
+            indice = $('input[name=indice]').val();
+
+            if (selector == "addDireccion") {
+                data = 'addDireccion={}&' + data;
+            } else {
+                data = 'editDireccion=' + indice + '&' + data;
+            }
+
+            console.log("Por el metodo ajas");
+            console.log("Por el metodo ajas data: " + data);
+            $.post('/tablas/clientes/form/ajax/direcciones', data, replaceItems);
+            
+            $('#exampleModalLong').modal('hide');
+        }
+    });
+
+    
+
+});
+   
+function validarDireccion() {
+
+    isValid = true;
+
+    size = $("input[name='direccionesSize']").val();
+
+    selector = $('input[name=parametro]').val();
+    indice = $('input[name=indice]').val();
+
+
+    tipoSeleccionado = $('#inputTipoDireccion').val();
+
+    for (var i = 0, l = size; i < l; i++) {
+
+        if (selector == "editDireccion" && indice == i) {
+            continue;
+        } else {
+
+            tipoGuardado = $(`input[name="direccionList[${i}].tipoDireccion"]`).val();
+
+            if (tipoGuardado === tipoSeleccionado) {
+
+                isValid = false;
+                break;
+            }
+        }
+    }
+
+    if (!isValid) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{tipoDireccion.unique}]]',
+            footer: ''
+        })
+        return false;
+    }
+
+
+    if ($("input[name='direccionNueva.direccion']").val().length == 0) {
+
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{direccion.required}]]',
+            footer: ''
+        })
+
+        return false;
+    }
+
+    if ($("input[name='direccionNueva.nrodireccion']").val().length == 0) {
+
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{nrodireccion.required}]]',
+            footer: ''
+        })
+        return false;
+    }
+    if ($("input[name='direccionNueva.interiorDpto']").val().length == 0) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{interiorDpto.required}]]',
+            footer: ''
+        })
+
+        return false;
+    }
+    if ($("input[name='direccionNueva.mzDireccion']").val().length == 0) {
+
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{mzDireccion.required}]]',
+            footer: ''
+        })
+
+        return false;
+    }
+    if ($("input[name='direccionNueva.loteDreccion']").val().length == 0) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{loteDreccion.required}]]',
+            footer: ''
+        })
+
+        return false;
+    }
+    if ($("input[name='direccionNueva.lugar']").val().length == 0) {
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{lugar.required}]]',
+            footer: ''
+        })
+
+        return false;
+    }
+
+    if ($('#inputProvincia').val() == 0) {
+
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{codProvincia.required}]]',
+            footer: ''
+        })
+
+        return false;
+    }
+
+    if ($('#inputDistrito').val() == 0) {
+
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia...',
+            text: '[[#{codDistrito.required}]]',
+            footer: ''
+        })
+
+        return false;
+    }
+
+
+    return true;
+}
+
+function replaceItems(html) {
+	console.log("Metodo Replace Item: " + html);
+    $('#direcciones').replaceWith($(html));
+    clearDireccionNueva();
+}
+
+function eliminarDireccion(button) {
+
+
+    Swal.fire({
+        title: 'Esta Ud. seguro?',
+        text: '[[#{representante.AntesEliminar}]]',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si!'
+    }).then((result) => {
+        if (result.value) {
+
+            var data = $('form').serialize();
+            data = 'removeDireccion=' + button.value + '&' + data;
+            //console.log(data);
+            $.post('/tablas/clientes/form/ajax/direcciones', data, replaceItems);
+
+            Swal.fire(
+                'Eliminado!',
+                '[[#{representante.HaSidoEliminado}]]',
+                'success'
+            )
+        }
+    })
+
+
+}
+
+function editarDireccion(button) {
+
+
+    $('input[name=parametro]').val("editDireccion");
+    $('input[name=indice]').val(button.value);
+    
+  /*   <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].codTabla}">
+    <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].idCampo}">
+    <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].nameCampo}">
+    <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].tipoDato}">
+    <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].longCampo}">
+    <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].permiteNulo}">
+    <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].campoIndice}">
+    <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].descripcionCampo}"> */    
+
+    //pasar los datos a las cajas de texto y combobox
+    direccionData = $(`input[name="direccionList[${button.value}].camposKey.codTabla"]`).val();
+    $("input[name='direccionNueva.camposKey.codTabla']").val(direccionData);
+    
+    nrodireccionData = $(`input[name="direccionList[${button.value}].camposKey.idCampo"]`).val();
+    $("input[name='direccionNueva.camposKey.idCampo']").val(nrodireccionData);
+    
+    interiorDptoData = $(`input[name="direccionList[${button.value}].nameCampo"]`).val();
+    $("input[name='direccionNueva.nameCampo']").val(interiorDptoData);
+    
+    mzDireccionData = $(`input[name="direccionList[${button.value}].tipoDato"]`).val();
+    $("input[name='direccionNueva.tipoDato']").val(mzDireccionData);
+    
+    loteDreccionData = $(`input[name="direccionList[${button.value}].longCampo"]`).val();
+    $("input[name='direccionNueva.longCampo']").val(loteDreccionData);
+    
+    lugarData = $(`input[name="direccionList[${button.value}].permiteNulo"]`).val();
+    $("input[name='direccionNueva.permiteNulo']").val(lugarData);
+    
+    lugarData = $(`input[name="direccionList[${button.value}].campoIndice"]`).val();
+    $("input[name='direccionNueva.campoIndice']").val(lugarData);
+    
+    lugarData = $(`input[name="direccionList[${button.value}].descripcionCampo"]`).val();
+    $("input[name='direccionNueva.descripcionCampo']").val(lugarData);
+    
+    $('#exampleModalLong').modal('show');
+
+
+}
+
+function cambiarComboDepartamento(indice) {
+
+    selectedText = $("#inputDepartamento option:selected").html();
+    $("input[name='direccionNueva.departamento']").val(selectedText);
+
+    $("#inputProvincia").load('/clientes/form/ajax/provincias', $("#inputDepartamento").serialize(), function () {
+        $('#inputProvincia').val($(`input[name="direccionList[${indice}].codProvincia"]`).val());
+        $("#inputDistrito").empty();
+        cambiarComboDistrito(indice);
+    });
+
+
+}
+
+function cambiarComboDistrito(indice) {
+
+    selectedText = $("#inputProvincia option:selected").html();
+    $("input[name='direccionNueva.provincia']").val(selectedText);
+
+    $("#inputDistrito").load('/clientes/form/ajax/distritos', $("#inputProvincia").serialize(), function () {
+        $('#inputDistrito').val($(`input[name="direccionList[${indice}].codDistrito"]`).val());
+        selectedText = $("#inputDistrito option:selected").html();
+        $("input[name='direccionNueva.distrito']").val(selectedText);
+    });
+
+}
+
+
+function clearDireccionNueva() {
+
+    $('input[name=parametro]').val("addDireccion");
+    $('input[name=indice]').val("");
+
+    $("input[name='direccionNueva.idCampo']").val("0");
+    $("input[name='direccionNueva.nameCampo']").val("");
+    $("input[name='direccionNueva.tipoDato']").val("");
+    $("input[name='direccionNueva.longCampo']").val("0");
+    $("input[name='direccionNueva.permiteNulo']").val("");
+    $("input[name='direccionNueva.campoIndice']").val("");
+    $("input[name='direccionNueva.descripcionCampo']").val("");
+}
+
+
+
+
+
+
+ 
+</script>
+</head>
+
+<body>
+<div layout:fragment="breadcrumb">
+    <h1 th:text="#{TablasForm.Title}"></h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> <span th:text="#{Home.Title}"/></a></li>
+        <li class="active" th:text="#{TablasForm.Title}">Guardar Tabla</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <form role="form" th:object="${TablasDTO}" method="post">
+
+
+                <div class="box box-primary">
+                
+	                <ul>
+	                        <li th:if="${#fields.hasErrors('direccionList')}">
+	                            <small class="form-text text-danger"
+	                                   th:errors="*{direccionList}"></small>
+	                        </li>
+	                    </ul>
+	
+	                   <br/>
+
+	                    <div id="exTab1">
+	
+	                        <ul class="nav nav-pills">
+	                            <li class="active">
+	                                <a href="#1a" data-toggle="tab" th:text="#{TablasForm.DatosGenerales}"></a>
+	                            </li>
+	                            <li><a href="#2a" data-toggle="tab" th:text="#{TablasForm.Columnas}"></a>
+	                            </li>
+	                            
+	                        </ul>
+	
+	
+	                        <div class="box-body">
+	                            <div class="tab-content">
+	                                <input th:type="hidden" th:field="${TablasDTO.idtabla}"/>
+	
+	                                <div class="tab-pane active" id="1a">
+	
+	                                    <div class="form-row">
+	                                        <div class="form-group col-md-6">
+	                                            <label for="nombreBaseDatos">Nombre Base de Datos</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('nombreBaseDatos')}"
+	                                                   th:errors="*{nombreBaseDatos}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="nombreBaseDatos"
+	                                                   th:field="${TablasDTO.nombreBaseDatos}"
+	                                                   maxlength="20">
+	                                        </div>
+	         
+	                                        <div class="form-group col-md-6">
+	                                            <label for="nombreTabla">Nombre de Tabla</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('nombreTabla')}"
+	                                                   th:errors="*{nombreTabla}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="nombreTabla"
+	                                                   th:field="${TablasDTO.nombreTabla}"
+	                                                   maxlength="20">
+	                                        </div>
+	
+	                                        <div class="form-group col-md-6">
+	                                            <label for="fechaTabla" >Fecha de Creacion</label>&nbsp;<i
+	                                                class="fa fa-calendar">
+	                                        </i>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('fechaTabla')}"
+	                                                   th:errors="*{fechaTabla}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="fechaTabla"
+	                                                   th:field="${TablasDTO.fechaTabla}"
+	                                                   name="fechaTabla"
+	                                                   data-provide="datepicker"
+	                                                   data-date-format="yyyy-mm-dd"
+	                                                   data-date-language="es-PE"
+	                                                   data-date-autoclose="true"
+	                                                   data-date-today-highlight="true"
+	                                                   data-date-end-date="0d"
+	                                                   data-date-orientation="bottom"
+	                                                   maxlength="10"/>
+	
+	                                        </div>
+	
+	                                        <div class="form-group col-md-6">
+	                                            <label for="descripcion">Descripcion</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('descripcion')}"
+	                                                   th:errors="*{descripcion}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="descripcion"
+	                                                   th:field="${TablasDTO.descripcion}"
+	                                                   maxlength="50">
+	                                        </div>
+	
+	                                        
+	                                        <div class="form-group col-md-6">
+	                                            <label for="tipoTabla">Tipo de Tabla</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('tipoTabla')}"
+	                                                   th:errors="*{tipoTabla}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="tipoTabla"
+	                                                   th:field="${TablasDTO.tipoTabla}"
+	                                                   maxlength="30">
+	                                        </div>
+	
+	                                        <div class="form-group">
+	                                            <label for="existencia">Data Sensible</label>
+	                                            <div class="custom-control custom-radio custom-control-inline">
+	                                                <input type="radio" id="option1" name="option1" class="custom-control-input" value="S" th:field="${TablasDTO.dataSensible}">
+	                                                <label class="custom-control-label" for="option1">S</label>
+	                                            </div>
+	                                            <div class="custom-control custom-radio custom-control-inline">
+	                                                <input type="radio" id="option2" name="option2" class="custom-control-input" value="N" th:field="${TablasDTO.dataSensible}">
+	                                                <label class="custom-control-label" for="option2">N</label>
+	                                            </div>
+	                                            <div class="invalid-feedback" th:errors="*{dataSensible}"></div>
+	                            
+	                                        </div>  
+	
+	                                        <div class="form-group col-md-6">
+	                                            <label for="frecuenciaRespaldo">Frecuencia de Respaldo</label>
+	                                            <select id="frecuenciaRespaldo"
+	                                                    class="form-control"
+	                                                    th:field="${TablasDTO.frecuenciaRespaldo}">
+	                                                <option th:each="frecuencia : ${allFrecuenciaRespaldo}"
+	                                                        th:value="${frecuencia}"
+	                                                        th:text="${frecuencia}"/>
+	                                            </select>
+	                                            
+	                                        </div>
+	
+	                                        <div class="form-group col-md-6">
+	                                            <label for="tipoParticion">Tipo de Particion</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('tipoParticion')}"
+	                                                   th:errors="*{tipoParticion}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="tipoParticion"
+	                                                   th:field="${TablasDTO.tipoParticion}"
+	                                                   maxlength="50">
+	                                        </div>
+	
+	                                    </div>
+	                                </div>
+	                                <!--FIn Tab1A -->
+	                                
+	                                <!--INico Tab2a -->
+	                                <div class="tab-pane" id="2a">
+	
+	                                    <div class="form-row">
+                           					<div class="form-group col-md-3">
+
+	             <!--                                <label>&nbsp;</label>
+	                                            <button type="button" name="clearDireccion"
+	                                                    onclick="clearDireccionNueva()" th:text="#{TablasForm.Nuevo}">
+	
+	                                            </button> -->
+	                                            <label>&nbsp;</label>
+	                                          <!-- Button trigger modal -->
+												<button type="button"  data-toggle="modal" data-target="#exampleModalLong"
+												 th:text="#{TablasForm.Nuevo}" onclick="clearDireccionNueva()">
+												  Nueva Columna
+												</button>
+												
+												<input type="hidden" name="parametro" value="addDireccion"/>
+                                                <input type="hidden" name="indice"/>
+
+                                        	</div>
+	                                        
+	                                        
+	                                        <div class="form-group table-responsive col-md-12">
+	                                            <fieldset id="direcciones">
+	                                                <table class="table table-bordered table-hover">
+	                                                    <thead>
+	                                                    <tr>
+ 	                                                        <th th:text="#{TablasForm.idCampo}"></th>
+	                                                        <th th:text="#{TablasForm.nameCampo}"></th>
+	                                                        <th th:text="#{TablasForm.tipoDato}"></th>
+	                                                        <th th:text="#{TablasForm.longCampo}"></th>
+	                                                        <th th:text="#{TablasForm.permiteNulo}"></th>
+	                                                        <th th:text="#{TablasForm.campoIndice}"></th>
+	                                                        <th th:text="#{TablasForm.descripcionCampo}"></th>
+	                                                        <th>&nbsp;</th>
+	                                                    </tr>
+	                                                    </thead>
+	                                                    <tbody>
+	                                   
+	                                                    <tr th:each="st,iter : ${TablasDTO.direccionList}">
+	
+	                                                        <td th:text="${st.camposKey.idCampo}"></td>
+	                                                        <td th:text="${st.nameCampo}"></td>	                                                        
+	                                                        <td th:text="${st.tipoDato}"></td>
+	                                                        <td th:text="${st.longCampo}"></td>
+	                                                        <td th:text="${st.permiteNulo}"></td>
+	                                                        <td th:text="${st.campoIndice}"></td>
+	                                                        <td th:text="${st.descripcionCampo}"></td>
+	                                                        <td>
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].camposKey.codTabla}">
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].camposKey.idCampo}">
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].nameCampo}">
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].tipoDato}">
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].longCampo}">
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].permiteNulo}">
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].campoIndice}">
+	                                                              <input th:type="hidden" th:field="${TablasDTO.direccionList[__${iter.index}__].descripcionCampo}">
+	                                                        
+	                                                            <button type="button"
+	                                                                    name="editDireccion"
+	                                                                    th:value="${iter.index}"
+	                                                                    th:text="#{TablasForm.Editar}"
+	                                                                    onclick="editarDireccion(this)">
+	
+	                                                            </button>
+	                                                            <button type="button"
+	                                                                    name="removeDireccion"
+	                                                                    th:value="${iter.index}"
+	                                                                    th:text="#{TablasForm.Eliminar}"
+	                                                                    onclick="eliminarDireccion(this)">
+	
+	                                                            </button>
+	
+	                                                        </td>
+	                                                    </tr>
+	                                                    
+	                                                    <tr th:if="${#lists.isEmpty(TablasDTO.direccionList)}">
+	                                                        <td colspan="13"
+	                                                            class="text-center" th:text="#{TablasForm.NoHayDireccionesRegistradas}">
+	                                                        </td>
+                                                    	</tr>
+	                                                    <tr>
+	                                                        <td colspan="13">
+	                                                            <input th:type="hidden"
+	                                                                   th:value="${#lists.size(TablasDTO.direccionList)}"
+	                                                                   th:name="direccionesSize"/>
+	                                                        </td>
+	    	                                                </tr>
+	
+	                                                    </tbody>
+	                                                </table>
+	                                            </fieldset>
+	                                        </div>
+	
+	
+	                                    </div>
+	                                    
+	                                    <!-- Inicio Modal -->
+										<!-- Modal -->
+										<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+										  <div class="modal-dialog" role="document">
+										    <div class="modal-content">
+										      <div class="modal-header myModal-header">
+										        <h5 class="modal-title" id="exampleModalLongTitle">Columnas</h5>
+										        <button type="button" class="close myModal-header-close" data-dismiss="modal" aria-label="Close">
+										          <span aria-hidden="true">&times;</span>
+										        </button>
+										      </div>
+										      <div class="modal-body">
+										        <!--Inicio Form Modal  -->
+										        <div class="form-row">
+										            <input id="direccionNueva.codTabla" th:type="hidden" name="direccionNueva.camposKey.codTabla" 
+										             th:value="${TablasDTO.idtabla}"/>
+										            
+			                                        <div class="form-group col-md-6">
+			                                            <label for="nombreBaseDatos">Id Campo</label>
+			                                             <input type="text" class="form-control"
+			                                                   id="idCampo"
+			                                                   th:field="${TablasDTO.direccionNueva.camposKey.idCampo}"
+			                                                   maxlength="20">
+			                                        </div>
+			         
+			                                        <div class="form-group col-md-6">
+			                                            <label for="nombreTabla">Nombre de Campo</label>
+			                                            <small class="form-text text-danger"
+			                                                   th:if="${#fields.hasErrors('direccionNueva.nameCampo')}"
+			                                                   th:errors="*{direccionNueva.nameCampo}"></small>
+			                                            <input type="text" class="form-control"
+			                                                   id="nameCampo"
+			                                                   th:field="${TablasDTO.direccionNueva.nameCampo}"
+			                                                   maxlength="20">
+			                                        </div>
+			
+		
+			                                        <div class="form-group col-md-6">
+			                                            <label for="descripcion">Tipo de Dato</label>
+			                                            <small class="form-text text-danger"
+			                                                   th:if="${#fields.hasErrors('direccionNueva.tipoDato')}"
+			                                                   th:errors="*{direccionNueva.tipoDato}"></small>
+			                                            <input type="text" class="form-control"
+			                                                   id="tipoDato"
+			                                                   th:field="${TablasDTO.direccionNueva.tipoDato}"
+			                                                   maxlength="50">
+			                                        </div>
+			
+			                                        
+			                                        <div class="form-group col-md-6">
+			                                            <label for="tipoTabla">Longitud Campoooo</label>
+			                                            <small class="form-text text-danger"
+			                                                   th:if="${#fields.hasErrors('direccionNueva.longCampo')}"
+			                                                   th:errors="*{direccionNueva.longCampo}"></small>
+			                                            <input type="text" class="form-control"
+			                                                   id="longCampo"
+			                                                   th:field="${TablasDTO.direccionNueva.longCampo}"
+			                                                   maxlength="30">
+			                                        </div>
+			
+		
+			                                        <div class="form-group col-md-6">
+			                                            <label for="tipoParticion">Permite Nulo</label>
+			                                            <small class="form-text text-danger"
+			                                                   th:if="${#fields.hasErrors('direccionNueva.permiteNulo')}"
+			                                                   th:errors="*{direccionNueva.permiteNulo}"></small>
+			                                            <input type="text" class="form-control"
+			                                                   id="permiteNulo"
+			                                                   th:field="${TablasDTO.direccionNueva.permiteNulo}"
+			                                                   maxlength="50">
+			                                        </div>
+			                                        
+			                                        <div class="form-group col-md-6">
+			                                            <label for="tipoParticion">Campo Indice</label>
+			                                            <small class="form-text text-danger"
+			                                                   th:if="${#fields.hasErrors('direccionNueva.campoIndice')}"
+			                                                   th:errors="*{direccionNueva.campoIndice}"></small>
+			                                            <input type="text" class="form-control"
+			                                                   id="campoIndice"
+			                                                   th:field="${TablasDTO.direccionNueva.campoIndice}"
+			                                                   maxlength="50">
+			                                        </div>
+			                                        
+			                                       <div class="form-group col-md-6">
+			                                            <label for="tipoParticion">Descripcion</label>
+			                                            <small class="form-text text-danger"
+			                                                   th:if="${#fields.hasErrors('direccionNueva.descripcionCampo')}"
+			                                                   th:errors="*{direccionNueva.descripcionCampo}"></small>
+			                                            <input type="text" class="form-control"
+			                                                   id="descripcionCampo"
+			                                                   th:field="${TablasDTO.direccionNueva.descripcionCampo}"
+			                                                   maxlength="50">
+			                                        </div>
+			
+			                                    </div>
+										        <!--Fin Form Modal  -->
+										      </div>
+										      <div class="modal-footer">
+										        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+										        <button type="button" name="addDireccion" class="btn btn-primary">Guardar</button>
+										      </div>
+										    </div>
+										  </div>
+										</div>
+	                                    <!-- FIn MOdal -->
+	                                </div>
+	                                <!--FIn TAB 2a -->
+	                                
+	                            </div>
+	                        </div>
+	
+	
+	                    </div>
+
+
+
+	                    <div class="box-footer with-border">
+	                        <a th:href="@{/tablas/listnew}" class="btn btn-default" role="button"
+	                           title="Back list" th:text="Cancelar">
+	                            <span aria-hidden="true"></span>
+	                        </a>
+	                        <button type="submit" class="box-title btn btn-primary"
+	                                title="Save Data" th:text="Guardar">
+	                        </button>
+	                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

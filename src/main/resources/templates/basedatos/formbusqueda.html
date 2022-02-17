@@ -1,0 +1,303 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sd="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title>Base de Datos</title>
+<style>     
+.prueba {
+    display: none
+}
+
+.abs-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50pem;
+  
+}
+
+.header {
+    color: #36A0FF;
+    font-size: 27px;
+    padding: 10px;
+}
+
+.bigicon {
+    font-size: 35px;
+    color: #36A0FF;
+}
+
+.login-header {
+    width: 350px;
+    height: 40px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.login-header, .registro {
+    background: radial-gradient(95.14% 7284.37% at 2.57% 20%, #3c8dbc 0%, #3c8dbc 100%);
+}
+.button, #regForm {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+}
+.login-header,
+.login p {
+    font-family: Ubuntu;
+    text-align: center;
+    line-height: 40px;
+    color: #444444;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13.0408px;
+}
+#regForm {
+    height: 300px;
+    width: 350px;
+    border: 0;
+}
+
+.password {
+  display: "block";
+}
+
+/* #nombre {
+  width: 280px;
+} */
+</style>
+<script>
+$(document).ready(function(){
+  $("#hide").click(function(){
+    $("p").hide();
+  });
+  
+  $("#buscar").click(function(){
+	  $("#tabla").show();
+	  $("#formulario").hide();
+  });
+  
+  $("#submit").click(function(){
+  
+	  if ($("input[name='idDataSources']").val().length == 0) {
+
+
+          Swal.fire({
+              icon: 'warning',
+              title: 'Advertencia...',
+              text: '[[#{datasources.required}]]',
+              footer: ''
+          })
+
+          return false;
+      }
+  });
+  
+  $("#regresar").click(function(){
+	    $("#tabla").hide();
+	    $("#formulario").show();
+  });
+  
+ var valor='8';
+/*   $("#registros tr").click(function() {
+  alert($(this).html());
+  
+  var currentRow=$(this).closest("tr"); 
+  
+  var col1=currentRow.find("td:eq(0)").text(); // get current row 1st TD value
+  var col2=currentRow.find("td:eq(1)").text(); // get current row 2nd TD
+  var col3=currentRow.find("td:eq(2)").text(); // get current row 3rd TD
+  var data=col1+"\n"+col2+"\n"+col3;
+  
+  alert(data);
+  });
+   */
+  
+  // code to read selected table row cell data (values).
+  $("#registros").on('click','.btnSelect',function(){
+       // get the current row
+       var currentRow=$(this).closest("tr"); 
+       
+       var col1=currentRow.find("td:eq(0)").text(); // get current row 1st TD value
+       var col2=currentRow.find("td:eq(1)").text(); // get current row 2nd TD
+       var col3=currentRow.find("td:eq(2)").text(); // get current row 3rd TD
+       var data=col1+"\n"+col2+"\n"+col3;
+       
+       //alert("Otro" + data);
+       
+       $("#tabla").hide();
+	   $("#formulario").show();
+	   $("#idDataSources").val(col1);
+	   $("#nombre").val(col2);
+  });
+  
+});
+</script>
+</head>
+<body>
+<div layout:fragment="breadcrumb">
+    <h1>Mantenimiento de Base De Datos</h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">basedatos</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+
+<div class="container mt-5  abs-center" id="formulario">
+
+    <div class="card mx-auto" id="regForm">
+        <h2 class="login-header rounded-top">Busqueda de Base de Datos</h2>
+        <div class="card-body">
+            <form role="form" th:action="@{/basedatos/list}" method="get">
+                <input th:type="hidden" id="idDataSources" name="idDataSources"/>
+                
+				<!-- <div class="form-group col-12 p-0 mb-4">
+				   <div class="input-group password">
+                          <input id="nombre" name="nombre" type="text" Class="form-control" placeholder="DataSources" />
+                          <button id="buscar" class="btn btn-primary" type="button"> 
+                          <span class="glyphicon glyphicon-search"></span> </button>
+                   </div>     
+				</div>//form-group -->
+				
+				<div class="form-group col-12 p-0 mb-4">
+				<div class="input-group"> 
+					<input id="nombre" name="nombre" type="text" placeholder="DataSources" class="form-control" /> 
+					<div class="input-group-btn"> 
+						<button id="buscar" class="btn btn-primary" type="button"> 
+							<span class="glyphicon glyphicon-search"></span>
+						 </button> 
+					</div> 
+				</div>
+				</div><!--//form-group-->
+
+			
+                <div class="form-group col-12 text-center mb-3">
+                    <button type="submit" class="btn btn-primary button registro" id="submit">
+                        Buscar
+                    </button>
+                </div><!--//form-group-->
+            </form>
+        </div><!--//card-body-->
+    </div><!--//card-->
+
+</div><!--//container Formulario-->
+
+        							<!--INICIO DE MAPEO DE TABLA  -->
+    <div class="row prueba" th:if="${mensaje == null}" id=tabla>
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                <a class="box-title btn btn-primary" id=regresar>Regresar</a>
+                    <div class="box-tools">
+                        <form th:action="@{/basedatos/busqueda}" method="get">
+                            <div class="input-group input-group-sm" style="width: 250px;">
+                                <input type="text" name="value" class="form-control pull-right"
+                                       placeholder="Nombre de DataSources" th:if="${key} == null"/>
+                                <input type="text" name="value" class="form-control pull-right"
+                                       placeholder="Nombre de DataSources" th:if="${key} != null"
+                                       th:value="${key}"/>
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <h6>Total de registros: <span th:text="${totalElementos}"></span></h6>
+                  
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover"  id=registros>
+                            <thead>
+                            <tr>
+                                <th class="text-center " scope="col">
+                                <a th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}/(numeroPagina=${numeroPagina},campoOrden='idtabla',sentidoOrden=${tipoSentidoOrden})}">Id de DataSources <i th:classappend="${tipoSentidoOrden eq 'asc' ? 'fas fa-sort-down' : 'fas fa-sort-up'}" class="fas fa-sort-down"></i></a>
+                                </th>
+                                <th class="text-center " scope="col">
+                                <a th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}/(numeroPagina=${numeroPagina},campoOrden='nombreBaseDatos',sentidoOrden=${tipoSentidoOrden})}">Nombre DataSources <i th:classappend="${tipoSentidoOrden eq 'asc' ? 'fas fa-sort-down' : 'fas fa-sort-up'}" class="fas fa-sort-down"></i></a>
+                                </th>
+                                <th class="text-center " scope="col">
+                                <a th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}/(numeroPagina=${numeroPagina},campoOrden='nombreTabla',sentidoOrden=${tipoSentidoOrden})}">Tipo Datasources <i th:classappend="${tipoSentidoOrden eq 'asc' ? 'fas fa-sort-down' : 'fas fa-sort-up'}" class="fas fa-sort-down"></i></a>
+                                </th>
+                                </th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="st,iter : ${tablas}">
+
+                                <td class="text-center" th:text="${st.idDatasource}"></td>
+                                <td class="text-center" th:text="${st.nombreDataSource}"></td>
+                                <td class="text-center" th:text="${st.tipoDataSources}"></td>
+                                <td>
+                                <button class="btnSelect">Select</button>
+<!--                                     <a class="btn btn-default" -->
+<!--                                        title="Seleccionar"><span class="glyphicon glyphicon-edit"></span></a> -->
+                                </td>
+                                
+                            </tr>
+                            
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12" th:if="${totalPaginas > 1}">
+                        <nav aria-label="Page navigation example" th:if="${totalPaginas gt 0}">
+                            <ul class="pagination">
+
+                                <li class="page-item" th:if="${numeroPagina > 1}">
+<!--                                     <a class="page-link" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=1,campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Primero" title="Primero">Primero</a> -->
+                                         <a class="page-link" th:href="@{/basedatos/busqueda(numeroPagina=1,campoOrden=${campoOrden})}" aria-label="Primero" title="Primero">Primero</a>
+                                </li>
+
+                                <li class="page-item" th:if="${numeroPagina > 1}" th:classappend="${ numeroPagina > totalPaginas} ? 'disabled' ">
+<!--                                     <a class="page-link" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${numeroPagina-1},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Anterior" title="Anterior">Anterior</a> -->
+                                        <a class="page-link" th:href="@{/basedatos/busqueda(numeroPagina=${numeroPagina-1},campoOrden=${campoOrden})}" aria-label="Anterior" title="Anterior">Anterior</a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${i eq numeroPagina} ? 'active'" th:each="i : ${#numbers.sequence( numeroPagina , totalPaginas > 10 + numeroPagina ? numeroPagina + 10 : totalPaginas, 1)}">
+					            <!-- <a class="page-link" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${i},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" th:text="${i}" th:title="${'Página '+ i}" rel="tooltip"></a> -->
+					            <a class="page-link" th:href="@{/basedatos/busqueda(numeroPagina=${i},campoOrden=${campoOrden})}" th:text="${i}" th:title="${'Página '+ i}" rel="tooltip"></a>
+					        </li>
+					        
+					        <li class="page-item disabled" th:if="${numeroPagina + 10 < totalPaginas}">
+					            <a class="page-link svg-icon" href="#">
+					                <span data-feather="more-horizontal" width="20" height="20">...</span>
+					            </a>
+					        </li>
+					        
+					        <li class="page-item" th:if="${numeroPagina < totalPaginas}" th:classappend="${numeroPagina eq totalPaginas} ? 'disabled'">
+					            <!-- <a class="page-link svg-icon" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${numeroPagina+1},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Siguiente" title="Siguiente" rel="tooltip">
+					                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20">Siguiente</span>
+					            </a> -->
+					            <a class="page-link svg-icon" th:href="@{/basedatos/busqueda(numeroPagina=${numeroPagina+1},campoOrden=${campoOrden})}" aria-label="Siguiente" title="Siguiente" rel="tooltip">
+					                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20">Siguiente</span>
+					            </a>
+					        </li>
+					        
+					        <li class="page-item" th:if="${numeroPagina < totalPaginas}" th:classappend="${numeroPagina eq totalPaginas} ? 'disabled'">
+<!-- 					        	<a class="page-link"  th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${totalPaginas},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Último" title="Último">Último</a> -->
+									<a class="page-link"  th:href="@{/basedatos/busqueda(numeroPagina=${totalPaginas},campoOrden=${campoOrden})}" aria-label="Último" title="Último">Último</a>
+					        </li>
+					        
+						</ul>
+					</nav>
+				</div>
+			</div>
+
+
+            </div>
+        </div>
+    </div>
+							
+	<!--FIN DE MAPEO DE TABLA -->
+
+
+</div> <!--Fin DIV Content  -->
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title>Guardar Base de Datos</title>
+    
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+	$("#cancelar").click(function(){
+	    llamada1();
+	});
+	
+	function llamada1() {
+	    var valor = $("#idDatasource").val()
+	    url = "/basedatos/list?idDataSources="+ valor;
+	    
+	    alert("JQuery Valor ID:" +valor );
+	    $(location).attr('href',url);
+	}
+
+});
+
+function llamada() {
+    alert("myJsFunc");
+    //window.location.href = "/basedatos/list?idDataSources=2";
+}
+
+</script>
+</head>
+
+<body>
+<div layout:fragment="breadcrumb">
+    <h1 th:text="#{BaseDatosForm.Title}"></h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> <span th:text="#{Home.Title}"/></a></li>
+        <li class="active" th:text="#{BaseDatosForm.Title}">Guardar Base Datos</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <form role="form" th:object="${BaseDatosDatasource}" method="post">
+
+
+                <div class="box box-primary">
+                
+	                   <br/>
+
+	                    <div id="exTab1">
+		                        
+	                        <div class="box-body">
+	                            <div class="tab-content">
+<!-- 	                                <input th:type="hidden" th:field="${DataSources.idDatasource}"/> -->
+	
+	                                <div class="tab-pane active" id="1a">
+	
+	                                    <div class="form-row">
+	                                    
+	                                    	<div class="form-group col-md-6">
+	                                            <label for="idDatasource">ID DataSources</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('id.idDatasource')}"
+	                                                   th:errors="*{id.idDatasource}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="idDatasource"
+	                                                   th:field="${BaseDatosDatasource.id.idDatasource}"	                                                    
+	                                                   maxlength="20"
+	                                                   th:readonly="${BaseDatosDatasource.id.idDatasource!=null}">
+	                                        </div>
+	                                        
+	                                        <div class="form-group col-md-6">
+	                                            <label for="idBd">ID Base Datos</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('id.idBd')}"
+	                                                   th:errors="*{id.idBd}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="idBd"
+	                                                   th:field="${BaseDatosDatasource.id.idBd}"	                                                    
+	                                                   maxlength="20"
+	                                                   th:readonly="${BaseDatosDatasource.id.idBd!=null}">
+	                                        </div>
+	                                        
+	                                        <div class="form-group col-md-6">
+	                                            <label for="nombreBaseDatos">Nombre BaseDatos</label>
+	                                            <small class="form-text text-danger"
+	                                                   th:if="${#fields.hasErrors('nombreBd')}"
+	                                                   th:errors="*{nombreBd}"></small>
+	                                            <input type="text" class="form-control"
+	                                                   id="nombreBaseDatos"
+	                                                   th:field="${BaseDatosDatasource.nombreBd}"
+	                                                   maxlength="20">
+	                                        </div>
+	         
+	                                    </div>
+	                                </div>
+	                                <!--FIn Tab1A -->
+	                                
+	                            </div>
+	                        </div>
+	
+	
+	                    </div>
+
+
+
+	                    <div class="box-footer with-border">
+	                        <!-- <a th:href="@{/basedatos/list}" class="btn btn-default" role="button"
+	                           title="Back list" th:text="Cancelar">
+	                            <span aria-hidden="true"></span>
+	                        </a> -->
+	                        
+	          <!--               <a href="/basedatos/list?idDataSources=2" class="btn btn-default" role="button"
+	                           title="Back list" th:text="Cancelar">
+	                            <span aria-hidden="true"></span>
+	                        </a>  -->
+	                        
+	                        <a href="#" class="btn btn-default" role="button"
+	                           title="Back list" th:text="Cancelar" id="cancelar">
+	                            <span aria-hidden="true"></span>
+	                        </a> 
+	                        <button type="submit" class="box-title btn btn-primary"
+	                                title="Save Data" th:text="Guardar">
+	                        </button>
+	                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

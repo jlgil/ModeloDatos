@@ -1,0 +1,136 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sd="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title>Bï¿½squeda de Clientes</title>
+</head>
+<body>
+<div layout:fragment="breadcrumb">
+    <h1>Gestion de Tablas</h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Tablas</li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <a class="box-title btn btn-primary" th:href="@{/tablas/form}">Nueva Tabla</a>
+
+
+                    <div class="box-tools">
+                        <form th:action="@{/tablas/listnew}" method="get">
+                            <div class="input-group input-group-sm" style="width: 250px;">
+                                <input type="text" name="value" class="form-control pull-right"
+                                       placeholder="Nombre de tabla" th:if="${key} == null"/>
+                                <input type="text" name="value" class="form-control pull-right"
+                                       placeholder="Nombre de tabla" th:if="${key} != null"
+                                       th:value="${key}"/>
+                                <div class="input-group-btn">
+                                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <h6>Total de registros: <span th:text="${totalElementos}"></span></h6>
+                  
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th class="text-center " scope="col">
+                                <a th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}/(numeroPagina=${numeroPagina},campoOrden='idtabla',sentidoOrden=${tipoSentidoOrden})}">Id de Tabla <i th:classappend="${tipoSentidoOrden eq 'asc' ? 'fas fa-sort-down' : 'fas fa-sort-up'}" class="fas fa-sort-down"></i></a>
+                                </th>
+                                <th class="text-center " scope="col">
+                                <a th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}/(numeroPagina=${numeroPagina},campoOrden='nombreBaseDatos',sentidoOrden=${tipoSentidoOrden})}">Nombre BD <i th:classappend="${tipoSentidoOrden eq 'asc' ? 'fas fa-sort-down' : 'fas fa-sort-up'}" class="fas fa-sort-down"></i></a>
+                                </th>
+                                <th class="text-center " scope="col">
+                                <a th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}/(numeroPagina=${numeroPagina},campoOrden='nombreTabla',sentidoOrden=${tipoSentidoOrden})}">Nombre Tabla <i th:classappend="${tipoSentidoOrden eq 'asc' ? 'fas fa-sort-down' : 'fas fa-sort-up'}" class="fas fa-sort-down"></i></a>
+                                </th>
+                                <th class="text-center " scope="col">
+                                <a th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}/(numeroPagina=${numeroPagina},campoOrden='frecuenciaRespaldo',sentidoOrden=${tipoSentidoOrden})}">Frecuencia Respaldo <i th:classappend="${tipoSentidoOrden eq 'asc' ? 'fas fa-sort-down' : 'fas fa-sort-up'}" class="fas fa-sort-down"></i></a>
+                                </th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="st,iter : ${tablas}">
+
+                                <td class="text-center" th:text="${st.idtabla}"></td>
+                                <td class="text-center" th:text="${st.nombreBaseDatos}"></td>
+                                <td class="text-center" th:text="${st.nombreTabla}"></td>
+                                <td class="text-center" th:text="${st.frecuenciaRespaldo}"></td>
+                                <td>
+                                    <a href="#" class="btn btn-default" th:href="@{/tablas/form(id=${st.idtabla})}"
+                                       title="Edit Data"><span class="glyphicon glyphicon-edit"></span></a>
+
+                                    <a href="#" class="btn btn-default" th:href="@{/tablas/delete(id=${st.idtabla})}"
+                                       title="Delete Data"><span class="glyphicon glyphicon-trash"></span></a>
+                                </td>
+                            </tr>
+                            
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12" th:if="${totalPaginas > 1}">
+                        <nav aria-label="Page navigation example" th:if="${totalPaginas gt 0}">
+                            <ul class="pagination">
+
+                                <li class="page-item" th:if="${numeroPagina > 1}">
+<!--                                     <a class="page-link" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=1,campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Primero" title="Primero">Primero</a> -->
+                                         <a class="page-link" th:href="@{/tablas/listnew(numeroPagina=1,campoOrden=${campoOrden})}" aria-label="Primero" title="Primero">Primero</a>
+                                </li>
+
+                                <li class="page-item" th:if="${numeroPagina > 1}" th:classappend="${ numeroPagina > totalPaginas} ? 'disabled' ">
+<!--                                     <a class="page-link" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${numeroPagina-1},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Anterior" title="Anterior">Anterior</a> -->
+                                        <a class="page-link" th:href="@{/tablas/listnew(numeroPagina=${numeroPagina-1},campoOrden=${campoOrden})}" aria-label="Anterior" title="Anterior">Anterior</a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${i eq numeroPagina} ? 'active'" th:each="i : ${#numbers.sequence( numeroPagina , totalPaginas > 10 + numeroPagina ? numeroPagina + 10 : totalPaginas, 1)}">
+					            <!-- <a class="page-link" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${i},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" th:text="${i}" th:title="${'Página '+ i}" rel="tooltip"></a> -->
+					            <a class="page-link" th:href="@{/tablas/listnew(numeroPagina=${i},campoOrden=${campoOrden})}" th:text="${i}" th:title="${'Página '+ i}" rel="tooltip"></a>
+					        </li>
+					        
+					        <li class="page-item disabled" th:if="${numeroPagina + 10 < totalPaginas}">
+					            <a class="page-link svg-icon" href="#">
+					                <span data-feather="more-horizontal" width="20" height="20">...</span>
+					            </a>
+					        </li>
+					        
+					        <li class="page-item" th:if="${numeroPagina < totalPaginas}" th:classappend="${numeroPagina eq totalPaginas} ? 'disabled'">
+					            <!-- <a class="page-link svg-icon" th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${numeroPagina+1},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Siguiente" title="Siguiente" rel="tooltip">
+					                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20">Siguiente</span>
+					            </a> -->
+					            <a class="page-link svg-icon" th:href="@{/tablas/listnew(numeroPagina=${numeroPagina+1},campoOrden=${campoOrden})}" aria-label="Siguiente" title="Siguiente" rel="tooltip">
+					                <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20">Siguiente</span>
+					            </a>
+					        </li>
+					        
+					        <li class="page-item" th:if="${numeroPagina < totalPaginas}" th:classappend="${numeroPagina eq totalPaginas} ? 'disabled'">
+<!-- 					        	<a class="page-link"  th:href="@{/pagina/{numeroPagina}/{campoOrden}/{sentidoOrden}(numeroPagina=${totalPaginas},campoOrden=${campoOrden},sentidoOrden=${tipoSentidoOrden eq 'desc'}  ? 'asc' : 'desc')}" aria-label="Último" title="Último">Último</a> -->
+									<a class="page-link"  th:href="@{/tablas/listnew(numeroPagina=${totalPaginas},campoOrden=${campoOrden})}" aria-label="Último" title="Último">Último</a>
+					        </li>
+					        
+						</ul>
+					</nav>
+				</div>
+			</div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

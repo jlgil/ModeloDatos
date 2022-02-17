@@ -1,0 +1,78 @@
+<!--/* Thymeleaf templating engine, Each token will be replaced by their respective titles in the resulting page. */-->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="#{Eliminar.Cliente}"></title>
+</head>
+<body>
+<div layout:fragment="breadcrumb" th:if="${mensaje == null}">
+    <h2 th:text="#{CargarTablas.Message}"> </h2>
+    <h1 th:text="#{CargarTablas.SubMessage}"> </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> <span th:text="#{Home.Title}"/></a></li>
+        <li class="active" th:text="#{Eliminar.Cliente}"></li>
+    </ol>
+</div>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary"  th:if="${mensaje == null}" >
+                <div class="box-header with-border">
+                    <h3 class="box-title">&nbsp;</h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form role="form" th:object="${DataSources}" method="post">
+
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <input th:type="hidden" th:field="${DataSources.idDatasource}"/>
+                            <label for="idDatasource">ID Datasources</label>
+                            <input type="text"
+                                   th:field="${DataSources.idDatasource}"
+                                   name="idDatasource" class="form-control" id="idDatasource" placeholder="Nombre BD" disabled/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombreTabla">Nombre de DataSources</label>
+                            <input type="text"
+                                   th:field="${DataSources.nombreDataSource}"
+                                   name="nombreDataSource" class="form-control" id="nombreDataSource" placeholder="Nombre de Tabla" disabled/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tipoDataSources">Tipo DataSources</label>
+                            <input type="text"
+                                   th:field="${DataSources.tipoDataSources}"
+                                   name="descripcion" class="form-control" id="tipoDataSources" placeholder="Descripcion" disabled/>
+                        </div>
+
+
+                        <div class="form-group">
+                            <a th:href="@{/datasources/list}" class="btn btn-default" role="button" title="Back list">
+                                <span aria-hidden="true">Cancelar</span>
+                            </a>
+                            <button type="submit" class="btn btn-warning" title="Cargar Esquema">Cargar Esquema</button>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+
+                </form>
+                
+            </div>
+            
+           
+            <div class="card text-center"  th:if="${mensaje != null}">
+  					<div class="card-body">
+    					<h2 class="card-title">Resultado</h2>
+    					<p class="card-text" th:text="${mensaje}"></p>
+    					<a th:href="@{/datasources/list}" href="#" class="btn btn-primary">Regresar</a>
+  					</div>
+			</div> <!-- fin card -->
+            
+        </div>
+    </div>
+</div>
+</body>
+</html>
